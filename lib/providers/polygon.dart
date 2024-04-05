@@ -13,7 +13,11 @@ class PolygonNotifier extends _$PolygonNotifier {
     return const Polygon(vertices: [], isCompleted: false);
   }
 
-  void addPoint(Offset newPoint) {
+  (bool success, String error) addPoint(Offset newPoint) {
+    if (forbiddenSegment(state.vertices, newPoint)) {
+      return (false, "Lines must not intersect");
+    }
+
     state = state.copyWith(
       vertices: [...state.vertices, newPoint],
       isCompleted: state.vertices.length > 1 &&
@@ -22,6 +26,8 @@ class PolygonNotifier extends _$PolygonNotifier {
             state.vertices.first,
           ),
     );
+
+    return (true, "");
   }
 
   void updatePoint(Offset newPosition) {

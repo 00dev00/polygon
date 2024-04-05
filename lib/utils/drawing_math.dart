@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+typedef LineSegment = ({Offset point1, Offset point2});
+
 // на каком расстоянии от первой точки считаем,
 // что можно соединяться с ней и замыкать полигон
 const neighbourOffset = 100.0;
@@ -35,3 +37,63 @@ bool _pointsAreCloseEnough(
 
   return distance.compareTo(delta) < 0;
 }
+
+// проходим попарно имеющиеся вершины,
+// к новой точке добавляем предыдущую вершину и получаем новый сегмент,
+// который проверяем на пересечение с другими сторонами полигона
+bool forbiddenSegment(List<Offset> vertices, Offset newPoint) {
+  if (vertices.length > 2) {
+    // не считаем пересечения для двух граней
+    LineSegment newLs = (point1: vertices.last, point2: newPoint);
+
+    for (var i = 0; i < vertices.length - 2; i++) {
+      LineSegment currentLs = (point1: vertices[i], point2: vertices[i + 1]);
+
+      if (_intersectingLines(newLs, currentLs)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+bool _intersectingLines(LineSegment line1, LineSegment line2) {
+  TripletOrientation po1 = _getOrientation(
+    line1.point1,
+    line1.point2,
+    line2.point1,
+  );
+  TripletOrientation po2 = _getOrientation(
+    line1.point1,
+    line1.point2,
+    line2.point2,
+  );
+  TripletOrientation po3 = _getOrientation(
+    line2.point1,
+    line2.point2,
+    line1.point1,
+  );
+  TripletOrientation po4 = _getOrientation(
+    line2.point1,
+    line2.point2,
+    line1.point2,
+  );
+
+  return (po1 != po2 && po3 != po4);
+}
+
+// вычисляем разницу в наклонах прямых между точками
+// чтобы сделать выводы об ориентации упорядоченных триплетов
+TripletOrientation _getOrientation(Offset p1, Offset p2, Offset p3) {
+  double val =
+      (p2.dy - p1.dy) * (p3.dx - p2.dx) - (p2.dx - p1.dx) * (p3.dy - p2.dy);
+
+  return switch (val) {
+    0 => TripletOrientation.colinear,
+    > 0 => TripletOrientation.clockwise,
+    _ => TripletOrientation.counterclockwise
+  };
+}
+
+enum TripletOrientation { clockwise, counterclockwise, colinear }

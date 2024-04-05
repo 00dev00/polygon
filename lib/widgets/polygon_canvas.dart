@@ -24,7 +24,12 @@ class PolygonCanvas extends ConsumerWidget {
           final newPoint = details.localPosition;
 
           if (!polygon.isCompleted) {
-            ref.read(polygonNotifierProvider.notifier).addPoint(newPoint);
+            final (bool success, String message) =
+                ref.read(polygonNotifierProvider.notifier).addPoint(newPoint);
+
+            if (!success) {
+              _showErrorMessage(message, context);
+            }
           }
         },
         onVerticalDragStart: (details) => ref
@@ -80,4 +85,19 @@ class PolygonPainter extends CustomPainter {
 
     canvasService.repaintCanvas();
   }
+}
+
+void _showErrorMessage(String message, BuildContext context) {
+  final snackBar = SnackBar(
+    backgroundColor: Theme.of(context).colorScheme.errorContainer,
+    content: Text(
+      message,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.onErrorContainer,
+      ),
+    ),
+  );
+
+  ScaffoldMessenger.of(context).clearSnackBars();
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
