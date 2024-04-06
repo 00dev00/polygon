@@ -6,7 +6,8 @@ part 'polygon.freezed.dart';
 @freezed
 class Polygon with _$Polygon {
   const factory Polygon({
-    required List<Offset> vertices,
-    required bool isCompleted,
+    @Default([]) List<Offset> vertices,
+    @Default(false) bool isCompleted,
+    @Default(-1) int draggedPointIndex,
   }) = _Polygon;
 }

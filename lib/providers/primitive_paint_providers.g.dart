@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'primitive_paints.dart';
+part of 'primitive_paint_providers.dart';
 
 // **************************************************************************
 // RiverpodGenerator

@@ -1,3 +1,2 @@
-export 'polygon.dart';
-export 'primitive_paints.dart';
-export 'draggable_dot.dart';
+export 'polygon_provider.dart';
+export 'primitive_paint_providers.dart';

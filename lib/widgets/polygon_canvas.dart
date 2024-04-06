@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:polygon/constants/all.dart';
 import 'package:polygon/models/polygon.dart';
+import 'package:polygon/providers/polygon_snapshots_provider.dart';
 import 'package:polygon/providers/providers.dart';
 import 'package:polygon/services/canvas_service.dart';
+import 'package:polygon/widgets/buttons/grid_button.dart';
+import 'package:polygon/widgets/buttons/undo_redo_button.dart';
 
 class PolygonCanvas extends ConsumerWidget {
   const PolygonCanvas({super.key});
@@ -20,42 +23,44 @@ class PolygonCanvas extends ConsumerWidget {
 
     return SafeArea(
       child: GestureDetector(
-        onTapUp: (TapUpDetails details) {
-          final newPoint = details.localPosition;
-
-          if (!polygon.isCompleted) {
-            final (bool success, String message) =
-                ref.read(polygonNotifierProvider.notifier).addPoint(newPoint);
-
-            if (!success) {
-              _showErrorMessage(message, context);
-            }
-          }
-        },
-        onVerticalDragStart: (details) => ref
-            .read(draggabbleDotNotifierProvider.notifier)
-            .updateDot(details.localPosition),
-        onHorizontalDragStart: (details) => ref
-            .read(draggabbleDotNotifierProvider.notifier)
-            .updateDot(details.localPosition),
-        onHorizontalDragUpdate: (details) => ref
-            .read(polygonNotifierProvider.notifier)
-            .updatePoint(details.localPosition),
-        onVerticalDragUpdate: (details) => ref
-            .read(polygonNotifierProvider.notifier)
-            .updatePoint(details.localPosition),
+        onTapUp: (details) => _onTapUp(context, details, ref),
+        onHorizontalDragUpdate: (details) => _onDragUpdate(ref, details),
+        onVerticalDragUpdate: (details) => _onDragUpdate(ref, details),
+        onHorizontalDragDown: (details) => _onDragDown(ref, details),
+        onVerticalDragDown: (details) => (),
         child: Container(
           decoration: const BoxDecoration(
             color: canvasBackgroundColor,
           ),
-          child: CustomPaint(
-            painter: PolygonPainter(
-              polygon,
-              appPaints,
-            ),
-            child: ProviderScope(
-              child: Container(),
-            ),
+          child: Stack(
+            children: [
+              CustomPaint(
+                painter: PolygonPainter(
+                  polygon,
+                  appPaints,
+                ),
+                child: ProviderScope(
+                  child: Container(),
+                ),
+              ),
+              Positioned(
+                width: MediaQuery.sizeOf(context).width,
+                top: 10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: UndoRedoButton(
+                        redo: _getRedoAction(ref),
+                        undo: _getUndoAction(ref),
+                      ),
+                    ),
+                    const GridButton(null),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -84,6 +89,51 @@ class PolygonPainter extends CustomPainter {
     );
 
     canvasService.repaintCanvas();
+  }
+}
+
+VoidCallback? _getUndoAction(WidgetRef ref) {
+  if (ref.read(polygonSnapshotsNotifierProvider).activeSnapshotIndex >= 0) {
+    return ref.read(polygonSnapshotsNotifierProvider.notifier).undo;
+  }
+
+  return null;
+}
+
+VoidCallback? _getRedoAction(WidgetRef ref) {
+  final snapshotsStorage = ref.read(polygonSnapshotsNotifierProvider);
+  if (snapshotsStorage.activeSnapshotIndex <
+      snapshotsStorage.snapshots.length - 1) {
+    return ref.read(polygonSnapshotsNotifierProvider.notifier).redo;
+  }
+
+  return null;
+}
+
+void _onDragUpdate(WidgetRef ref, DragUpdateDetails details) {
+  return ref
+      .read(polygonNotifierProvider.notifier)
+      .setDraggedPointPosition(details.localPosition);
+}
+
+void _onDragDown(WidgetRef ref, DragDownDetails details) {
+  final polygon = ref.read(polygonNotifierProvider);
+  final polygonSnapshotsNotifier =
+      ref.read(polygonSnapshotsNotifierProvider.notifier);
+  return polygonSnapshotsNotifier.addSnapshot(polygon);
+}
+
+void _onTapUp(BuildContext context, TapUpDetails details, WidgetRef ref) {
+  final Polygon polygon = ref.read(polygonNotifierProvider);
+  final newPoint = details.localPosition;
+
+  if (!polygon.isCompleted) {
+    final (bool success, String message) =
+        ref.read(polygonNotifierProvider.notifier).addPoint(newPoint);
+
+    if (!success) {
+      _showErrorMessage(message, context);
+    }
   }
 }
 

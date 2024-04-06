@@ -1,27 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'draggable_dot.dart';
+part of 'polygon_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$draggabbleDotNotifierHash() =>
-    r'89cbe6751d6ced70843aa30d2f5492dc44336970';
+String _$polygonNotifierHash() => r'29a17d54540fc87f9808cf0b5dabef61f7696f3b';
 
-/// See also [DraggabbleDotNotifier].
-@ProviderFor(DraggabbleDotNotifier)
-final draggabbleDotNotifierProvider =
-    NotifierProvider<DraggabbleDotNotifier, int>.internal(
-  DraggabbleDotNotifier.new,
-  name: r'draggabbleDotNotifierProvider',
+/// See also [PolygonNotifier].
+@ProviderFor(PolygonNotifier)
+final polygonNotifierProvider =
+    AutoDisposeNotifierProvider<PolygonNotifier, Polygon>.internal(
+  PolygonNotifier.new,
+  name: r'polygonNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$draggabbleDotNotifierHash,
+      : _$polygonNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$DraggabbleDotNotifier = Notifier<int>;
+typedef _$PolygonNotifier = AutoDisposeNotifier<Polygon>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:polygon/models/polygon.dart';
-import 'package:polygon/providers/providers.dart';
+import "package:polygon/providers/polygon_snapshots_provider.dart";
 import 'package:polygon/utils/drawing_math.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'polygon.g.dart';
+part 'polygon_provider.g.dart';
 
 @riverpod
 class PolygonNotifier extends _$PolygonNotifier {
   @override
   Polygon build() {
-    return const Polygon(vertices: [], isCompleted: false);
+    return const Polygon();
   }
 
   (bool success, String error) addPoint(Offset newPoint) {
@@ -27,21 +28,27 @@ class PolygonNotifier extends _$PolygonNotifier {
           ),
     );
 
+    ref.read(polygonSnapshotsNotifierProvider.notifier).addSnapshot(state);
+
     return (true, "");
   }
 
-  void updatePoint(Offset newPosition) {
-    int draggedPointIndex = ref.read(draggabbleDotNotifierProvider);
+  void setDraggedPointPosition(Offset newPosition) {
+    int index = state.draggedPointIndex;
 
-    if (draggedPointIndex != -1) {
+    if (index == -1) {
+      index = getClosestPoint(state.vertices, newPosition);
+    }
+
+    if (index != -1) {
       final newVertices = [
-        ...state.vertices.sublist(0, draggedPointIndex),
+        ...state.vertices.sublist(0, index),
         newPosition,
-        ...state.vertices.sublist(draggedPointIndex + 1, state.vertices.length)
+        ...state.vertices.sublist(index + 1, state.vertices.length)
       ];
       final shouldBeCompleted = state.isCompleted ||
           state.vertices.length > 1 &&
-              draggedPointIndex == state.vertices.length - 1 &&
+              index == state.vertices.length - 1 &&
               polygonShouldBeClosed(
                 newPosition,
                 state.vertices.first,
@@ -50,7 +57,12 @@ class PolygonNotifier extends _$PolygonNotifier {
       state = state.copyWith(
         vertices: newVertices,
         isCompleted: shouldBeCompleted,
+        draggedPointIndex: index,
       );
     }
+  }
+
+  void updateStateFromSnapshot(Polygon newPolygon) {
+    state = newPolygon;
   }
 }

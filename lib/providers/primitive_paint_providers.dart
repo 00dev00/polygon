@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:polygon/constants/all.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'primitive_paints.g.dart';
+part 'primitive_paint_providers.g.dart';
 
 @riverpod
 Paint vertexInnerPaint(VertexInnerPaintRef ref) => Paint()

@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$Polygon {
   List<Offset> get vertices => throw _privateConstructorUsedError;
   bool get isCompleted => throw _privateConstructorUsedError;
+  int get draggedPointIndex => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PolygonCopyWith<Polygon> get copyWith => throw _privateConstructorUsedError;
@@ -28,7 +29,7 @@ abstract class $PolygonCopyWith<$Res> {
   factory $PolygonCopyWith(Polygon value, $Res Function(Polygon) then) =
       _$PolygonCopyWithImpl<$Res, Polygon>;
   @useResult
-  $Res call({List<Offset> vertices, bool isCompleted});
+  $Res call({List<Offset> vertices, bool isCompleted, int draggedPointIndex});
 }
 
 /// @nodoc
@@ -46,6 +47,7 @@ class _$PolygonCopyWithImpl<$Res, $Val extends Polygon>
   $Res call({
     Object? vertices = null,
     Object? isCompleted = null,
+    Object? draggedPointIndex = null,
   }) {
     return _then(_value.copyWith(
       vertices: null == vertices
@@ -56,6 +58,10 @@ class _$PolygonCopyWithImpl<$Res, $Val extends Polygon>
           ? _value.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable
               as bool,
+      draggedPointIndex: null == draggedPointIndex
+          ? _value.draggedPointIndex
+          : draggedPointIndex // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -67,7 +73,7 @@ abstract class _$$PolygonImplCopyWith<$Res> implements $PolygonCopyWith<$Res> {
       __$$PolygonImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Offset> vertices, bool isCompleted});
+  $Res call({List<Offset> vertices, bool isCompleted, int draggedPointIndex});
 }
 
 /// @nodoc
@@ -83,6 +89,7 @@ class __$$PolygonImplCopyWithImpl<$Res>
   $Res call({
     Object? vertices = null,
     Object? isCompleted = null,
+    Object? draggedPointIndex = null,
   }) {
     return _then(_$PolygonImpl(
       vertices: null == vertices
@@ -93,6 +100,10 @@ class __$$PolygonImplCopyWithImpl<$Res>
           ? _value.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable
               as bool,
+      draggedPointIndex: null == draggedPointIndex
+          ? _value.draggedPointIndex
+          : draggedPointIndex // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -101,11 +112,14 @@ class __$$PolygonImplCopyWithImpl<$Res>
 
 class _$PolygonImpl implements _Polygon {
   const _$PolygonImpl(
-      {required final List<Offset> vertices, required this.isCompleted})
+      {final List<Offset> vertices = const [],
+      this.isCompleted = false,
+      this.draggedPointIndex = -1})
       : _vertices = vertices;
 
   final List<Offset> _vertices;
   @override
+  @JsonKey()
   List<Offset> get vertices {
     if (_vertices is EqualUnmodifiableListView) return _vertices;
     // ignore: implicit_dynamic_type
@@ -113,11 +127,15 @@ class _$PolygonImpl implements _Polygon {
   }
 
   @override
+  @JsonKey()
   final bool isCompleted;
+  @override
+  @JsonKey()
+  final int draggedPointIndex;
 
   @override
   String toString() {
-    return 'Polygon(vertices: $vertices, isCompleted: $isCompleted)';
+    return 'Polygon(vertices: $vertices, isCompleted: $isCompleted, draggedPointIndex: $draggedPointIndex)';
   }
 
   @override
@@ -127,12 +145,17 @@ class _$PolygonImpl implements _Polygon {
             other is _$PolygonImpl &&
             const DeepCollectionEquality().equals(other._vertices, _vertices) &&
             (identical(other.isCompleted, isCompleted) ||
-                other.isCompleted == isCompleted));
+                other.isCompleted == isCompleted) &&
+            (identical(other.draggedPointIndex, draggedPointIndex) ||
+                other.draggedPointIndex == draggedPointIndex));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_vertices), isCompleted);
+      runtimeType,
+      const DeepCollectionEquality().hash(_vertices),
+      isCompleted,
+      draggedPointIndex);
 
   @JsonKey(ignore: true)
   @override
@@ -143,13 +166,16 @@ class _$PolygonImpl implements _Polygon {
 
 abstract class _Polygon implements Polygon {
   const factory _Polygon(
-      {required final List<Offset> vertices,
-      required final bool isCompleted}) = _$PolygonImpl;
+      {final List<Offset> vertices,
+      final bool isCompleted,
+      final int draggedPointIndex}) = _$PolygonImpl;
 
   @override
   List<Offset> get vertices;
   @override
   bool get isCompleted;
+  @override
+  int get draggedPointIndex;
   @override
   @JsonKey(ignore: true)
   _$$PolygonImplCopyWith<_$PolygonImpl> get copyWith =>
