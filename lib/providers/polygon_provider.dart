@@ -62,6 +62,11 @@ class PolygonNotifier extends _$PolygonNotifier {
     }
   }
 
+  void postDraggingUpdate() {
+    state = state.copyWith(draggedPointIndex: -1);
+    ref.read(polygonSnapshotsNotifierProvider.notifier).addSnapshot(state);
+  }
+
   void updateStateFromSnapshot(Polygon newPolygon) {
     state = newPolygon;
   }

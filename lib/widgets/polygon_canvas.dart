@@ -26,8 +26,10 @@ class PolygonCanvas extends ConsumerWidget {
         onTapUp: (details) => _onTapUp(context, details, ref),
         onHorizontalDragUpdate: (details) => _onDragUpdate(ref, details),
         onVerticalDragUpdate: (details) => _onDragUpdate(ref, details),
-        onHorizontalDragDown: (details) => _onDragDown(ref, details),
-        onVerticalDragDown: (details) => (),
+        onHorizontalDragEnd: (details) =>
+            ref.read(polygonNotifierProvider.notifier).postDraggingUpdate(),
+        onVerticalDragEnd: (details) =>
+            ref.read(polygonNotifierProvider.notifier).postDraggingUpdate(),
         child: Container(
           decoration: const BoxDecoration(
             color: canvasBackgroundColor,
@@ -114,13 +116,6 @@ void _onDragUpdate(WidgetRef ref, DragUpdateDetails details) {
   return ref
       .read(polygonNotifierProvider.notifier)
       .setDraggedPointPosition(details.localPosition);
-}
-
-void _onDragDown(WidgetRef ref, DragDownDetails details) {
-  final polygon = ref.read(polygonNotifierProvider);
-  final polygonSnapshotsNotifier =
-      ref.read(polygonSnapshotsNotifierProvider.notifier);
-  return polygonSnapshotsNotifier.addSnapshot(polygon);
 }
 
 void _onTapUp(BuildContext context, TapUpDetails details, WidgetRef ref) {
