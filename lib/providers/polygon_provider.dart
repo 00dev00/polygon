@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:polygon/models/grid_metadata.dart';
 import 'package:polygon/models/polygon.dart';
+import 'package:polygon/providers/drawing_providers.dart';
 import "package:polygon/providers/polygon_snapshots_provider.dart";
 import 'package:polygon/utils/drawing_math.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,9 +16,19 @@ class PolygonNotifier extends _$PolygonNotifier {
     return const Polygon();
   }
 
-  (bool success, String error) addPoint(Offset newPoint) {
+  (bool success, String error) addPoint(
+      Offset newPoint, GridMetadata defaultGridMetadata) {
     if (forbiddenSegment(state.vertices, newPoint)) {
       return (false, "Lines must not intersect");
+    }
+
+    if (ref
+        .read(gridMetadataNotifierProvider(defaultGridMetadata))
+        .attachMode) {
+      final closestGridPointIndex =
+          getClosestGridPoint(defaultGridMetadata.generatedDots, newPoint);
+
+      newPoint = defaultGridMetadata.generatedDots[closestGridPointIndex];
     }
 
     state = state.copyWith(
@@ -37,7 +49,7 @@ class PolygonNotifier extends _$PolygonNotifier {
     int index = state.draggedPointIndex;
 
     if (index == -1) {
-      index = getClosestPoint(state.vertices, newPosition);
+      index = getClosestDraggablePoint(state.vertices, newPosition);
     }
 
     if (index != -1) {
@@ -63,8 +75,12 @@ class PolygonNotifier extends _$PolygonNotifier {
   }
 
   void postDraggingUpdate() {
-    state = state.copyWith(draggedPointIndex: -1);
-    ref.read(polygonSnapshotsNotifierProvider.notifier).addSnapshot(state);
+    // необязательная проверка
+    // (логика ломалась из-за срабатывания drag-событий на колесико мыши)
+    if (state.draggedPointIndex != -1) {
+      state = state.copyWith(draggedPointIndex: -1);
+      ref.read(polygonSnapshotsNotifierProvider.notifier).addSnapshot(state);
+    }
   }
 
   void updateStateFromSnapshot(Polygon newPolygon) {

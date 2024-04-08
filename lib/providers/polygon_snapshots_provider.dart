@@ -11,6 +11,7 @@ class PolygonSnapshotsNotifier extends _$PolygonSnapshotsNotifier {
   PolygonSnapshotsStorage build() => const PolygonSnapshotsStorage();
 
   void addSnapshot(Polygon newPolygon) {
+    // стираем хвостовые данные, чтобы не было ошибок с undo/redo
     final updatedSnapshots =
         state.snapshots.sublist(0, state.activeSnapshotIndex + 1);
 

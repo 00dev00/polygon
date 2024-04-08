@@ -1,35 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:polygon/constants/all.dart';
+import 'package:polygon/models/grid_metadata.dart';
 import 'package:polygon/models/polygon.dart';
 import 'package:polygon/providers/providers.dart';
-
-const double gridCellSide = 40;
-const double gridDotRadius = 2;
 
 class CanvasService {
   final Canvas canvas;
   final Polygon polygon;
   final AppPaints appPaints;
-  final Size canvasSize; // max height, max width
+  final GridMetadata gridMetadata; // max height, max width
 
   CanvasService({
     required this.canvas,
     required this.polygon,
     required this.appPaints,
-    this.canvasSize = const Size(5000, 5000),
+    required this.gridMetadata,
   });
 
   void _drawGrid() {
-    for (double x = gridDotRadius; x < canvasSize.width; x += gridCellSide) {
-      for (double y = gridDotRadius; y < canvasSize.height; y += gridCellSide) {
-        canvas.drawCircle(Offset(x, y), 2, appPaints.gridDotPaint);
-      }
+    for (Offset dot in gridMetadata.generatedDots) {
+      canvas.drawCircle(
+        dot,
+        gridMetadata.dotRadius,
+        appPaints.gridDotPaint,
+      );
     }
-  }
-
-  void _drawPoint(Offset center) {
-    canvas.drawCircle(center, pointRadius, appPaints.vertexInnerPaint);
-    canvas.drawCircle(center, pointRadius, appPaints.vertexOuterPaint);
   }
 
   void _drawPolygon() {
@@ -65,5 +60,10 @@ class CanvasService {
   void repaintCanvas() {
     _drawGrid();
     _drawPolygon();
+  }
+
+  void _drawPoint(Offset center) {
+    canvas.drawCircle(center, pointRadius, appPaints.vertexInnerPaint);
+    canvas.drawCircle(center, pointRadius, appPaints.vertexOuterPaint);
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:polygon/constants/all.dart';
+import 'package:polygon/models/grid_metadata.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'primitive_paint_providers.g.dart';
+part 'drawing_providers.g.dart';
 
 @riverpod
 Paint vertexInnerPaint(VertexInnerPaintRef ref) => Paint()
@@ -40,4 +41,40 @@ class AppPaints {
     required this.strokePaint,
     required this.gridDotPaint,
   });
+}
+
+@riverpod
+class GridMetadataNotifier extends _$GridMetadataNotifier {
+  @override
+  GridMetadata build(GridMetadata gridMetadata) {
+    final grid = _generateGrid(
+      maxHeight: gridMetadata.maxHeight,
+      maxWidth: gridMetadata.maxWidth,
+      dotRadius: gridMetadata.dotRadius,
+      cellSize: gridMetadata.cellSize,
+    );
+
+    return gridMetadata.copyWith(
+      generatedDots: grid,
+    );
+  }
+
+  void toggleMode() {
+    state = state.copyWith(attachMode: !state.attachMode);
+  }
+
+  List<Offset> _generateGrid({
+    required double maxHeight,
+    required double maxWidth,
+    required double dotRadius,
+    required double cellSize,
+  }) {
+    List<Offset> result = [];
+    for (double x = dotRadius; x < maxWidth; x += cellSize) {
+      for (double y = dotRadius; y < maxHeight; y += cellSize) {
+        result.add(Offset(x, y));
+      }
+    }
+    return result;
+  }
 }

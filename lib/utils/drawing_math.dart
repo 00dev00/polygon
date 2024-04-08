@@ -13,12 +13,12 @@ const neighbourOffset = 200.0;
 const maxDragOffset = 20.0;
 
 // считаем расстояние между точками по формуле Евклида
-double calcDistance(Offset point1, Offset point2) {
+double _calcDistance(Offset point1, Offset point2) {
   return sqrt(pow(point2.dx - point1.dx, 2) + (pow(point2.dy - point1.dy, 2)));
 }
 
 // ищем среди точек полигона наиболее подходящую для перетаскивания
-int getClosestPoint(List<Offset> vertices, Offset dragPoint) {
+int getClosestDraggablePoint(List<Offset> vertices, Offset dragPoint) {
   for (var i = 0; i < vertices.length; i++) {
     if (_pointsAreCloseEnough(dragPoint, vertices[i], maxDragOffset)) {
       return i;
@@ -28,12 +28,27 @@ int getClosestPoint(List<Offset> vertices, Offset dragPoint) {
   return -1;
 }
 
+// эффективнее было бы использовать вариацию бинарного поиска
+// для демонстрации графических возможностей и так сойдет
+int getClosestGridPoint(List<Offset> gridDots, Offset newPoint) {
+  ({int index, double value}) minDiff = (index: -1, value: double.maxFinite);
+
+  for (var i = 0; i < gridDots.length; i++) {
+    final distance = _calcDistance(newPoint, gridDots[i]);
+    if (distance < minDiff.value) {
+      minDiff = (index: i, value: distance);
+    }
+  }
+
+  return minDiff.index;
+}
+
 bool polygonShouldBeClosed(Offset lastPoint, Offset firstPoint) =>
     _pointsAreCloseEnough(lastPoint, firstPoint, neighbourOffset);
 
 bool _pointsAreCloseEnough(
     Offset firstPoint, Offset secondPoint, double delta) {
-  double distance = calcDistance(firstPoint, secondPoint);
+  double distance = _calcDistance(firstPoint, secondPoint);
 
   return distance.compareTo(delta) < 0;
 }

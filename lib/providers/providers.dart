@@ -1,2 +1,2 @@
 export 'polygon_provider.dart';
-export 'primitive_paint_providers.dart';
+export 'drawing_providers.dart';

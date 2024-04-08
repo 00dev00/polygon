@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:polygon/constants/all.dart';
+import 'package:polygon/models/grid_metadata.dart';
 import 'package:polygon/models/polygon.dart';
 import 'package:polygon/providers/polygon_snapshots_provider.dart';
 import 'package:polygon/providers/providers.dart';
@@ -10,11 +11,22 @@ import 'package:polygon/widgets/buttons/undo_redo_button.dart';
 
 class PolygonCanvas extends ConsumerWidget {
   const PolygonCanvas({super.key});
+  final double gridCellSide = 40;
+  final double gridDotRadius = 2;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var polygon = ref.watch(polygonNotifierProvider);
-    var appPaints = AppPaints(
+    final defaultGridMetadata = GridMetadata(
+      maxWidth: MediaQuery.sizeOf(context).width,
+      maxHeight: MediaQuery.sizeOf(context).height,
+      cellSize: gridCellSide,
+      dotRadius: gridDotRadius,
+    );
+    final polygon = ref.watch(polygonNotifierProvider);
+    final gridProvider = gridMetadataNotifierProvider(defaultGridMetadata);
+    final gridMetadata = ref.watch(gridProvider);
+
+    final appPaints = AppPaints(
       vertexInnerPaint: ref.read(vertexInnerPaintProvider),
       vertexOuterPaint: ref.read(vertexOuterPaintProvider),
       strokePaint: ref.read(strokePaintProvider),
@@ -22,48 +34,60 @@ class PolygonCanvas extends ConsumerWidget {
     );
 
     return SafeArea(
-      child: GestureDetector(
-        onTapUp: (details) => _onTapUp(context, details, ref),
-        onHorizontalDragUpdate: (details) => _onDragUpdate(ref, details),
-        onVerticalDragUpdate: (details) => _onDragUpdate(ref, details),
-        onHorizontalDragEnd: (details) =>
-            ref.read(polygonNotifierProvider.notifier).postDraggingUpdate(),
-        onVerticalDragEnd: (details) =>
-            ref.read(polygonNotifierProvider.notifier).postDraggingUpdate(),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: canvasBackgroundColor,
-          ),
-          child: Stack(
-            children: [
-              CustomPaint(
+      child: Container(
+        decoration: const BoxDecoration(
+          color: canvasBackgroundColor,
+        ),
+        child: Stack(
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapUp: (details) => _onTapUp(
+                context,
+                details,
+                ref,
+                gridMetadata,
+              ),
+              onHorizontalDragUpdate: (details) => _onDragUpdate(ref, details),
+              onVerticalDragUpdate: (details) => _onDragUpdate(ref, details),
+              onHorizontalDragEnd: (details) => ref
+                  .read(polygonNotifierProvider.notifier)
+                  .postDraggingUpdate(),
+              onVerticalDragEnd: (details) => ref
+                  .read(polygonNotifierProvider.notifier)
+                  .postDraggingUpdate(),
+              child: CustomPaint(
                 painter: PolygonPainter(
-                  polygon,
-                  appPaints,
+                  polygon: polygon,
+                  appPaints: appPaints,
+                  gridMetadata: gridMetadata,
                 ),
                 child: ProviderScope(
                   child: Container(),
                 ),
               ),
-              Positioned(
-                width: MediaQuery.sizeOf(context).width,
-                top: 10,
+            ),
+            Positioned(
+              width: MediaQuery.sizeOf(context).width,
+              top: 10,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: UndoRedoButton(
-                        redo: _getRedoAction(ref),
-                        undo: _getUndoAction(ref),
-                      ),
+                    UndoRedoButton(
+                      redo: _getRedoAction(ref),
+                      undo: _getUndoAction(ref),
                     ),
-                    const GridButton(null),
+                    GridButton(
+                      attachMode: gridMetadata.attachMode,
+                      onPressed: ref.read(gridProvider.notifier).toggleMode,
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -73,11 +97,13 @@ class PolygonCanvas extends ConsumerWidget {
 class PolygonPainter extends CustomPainter {
   final AppPaints appPaints;
   final Polygon polygon;
+  final GridMetadata gridMetadata;
 
-  PolygonPainter(
-    this.polygon,
-    this.appPaints,
-  );
+  PolygonPainter({
+    required this.polygon,
+    required this.appPaints,
+    required this.gridMetadata,
+  });
 
   @override
   bool shouldRepaint(covariant PolygonPainter oldDelegate) => true;
@@ -88,6 +114,7 @@ class PolygonPainter extends CustomPainter {
       canvas: canvas,
       polygon: polygon,
       appPaints: appPaints,
+      gridMetadata: gridMetadata,
     );
 
     canvasService.repaintCanvas();
@@ -118,13 +145,19 @@ void _onDragUpdate(WidgetRef ref, DragUpdateDetails details) {
       .setDraggedPointPosition(details.localPosition);
 }
 
-void _onTapUp(BuildContext context, TapUpDetails details, WidgetRef ref) {
+void _onTapUp(
+  BuildContext context,
+  TapUpDetails details,
+  WidgetRef ref,
+  GridMetadata defaultGridMetadata,
+) {
   final Polygon polygon = ref.read(polygonNotifierProvider);
   final newPoint = details.localPosition;
 
   if (!polygon.isCompleted) {
-    final (bool success, String message) =
-        ref.read(polygonNotifierProvider.notifier).addPoint(newPoint);
+    final (bool success, String message) = ref
+        .read(polygonNotifierProvider.notifier)
+        .addPoint(newPoint, defaultGridMetadata);
 
     if (!success) {
       _showErrorMessage(message, context);

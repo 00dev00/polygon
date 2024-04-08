@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
 
 class GridButton extends StatelessWidget {
-  const GridButton(
-    this.onPressed, {
+  const GridButton({
+    required this.attachMode,
+    required this.onPressed,
     super.key,
   });
 
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
+  final bool attachMode;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.white,
-        shape: const CircleBorder(),
+    return Container(
+      decoration: const BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 6.0,
+          ),
+        ],
+        color: Colors.white,
+        shape: BoxShape.circle,
       ),
-      child: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Icon(
-          Icons.grid_3x3,
-          size: 30,
-        ),
+      child: IconButton(
+        icon: const Icon(Icons.grid_3x3),
+        color: attachMode ? Colors.lightGreen[500] : Colors.black,
+        onPressed: onPressed,
       ),
     );
   }
