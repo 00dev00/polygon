@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:polygon/constants/all.dart';
 import 'package:polygon/models/grid_metadata.dart';
+import 'package:polygon/providers/polygon_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'drawing_providers.g.dart';
@@ -61,6 +62,9 @@ class GridMetadataNotifier extends _$GridMetadataNotifier {
 
   void toggleMode() {
     state = state.copyWith(attachMode: !state.attachMode);
+    ref
+        .read(polygonNotifierProvider.notifier)
+        .attachToGrid(state.generatedDots, state.attachMode);
   }
 
   List<Offset> _generateGrid({

@@ -45,6 +45,24 @@ class PolygonNotifier extends _$PolygonNotifier {
     return (true, "");
   }
 
+  // TODO: в светлом будущем переделать алгоритм, текущий неэффективен
+  void attachToGrid(List<Offset> gridDots, bool attachMode) {
+    List<Offset> newVertices = [];
+
+    for (var i = 0; i < state.vertices.length; i++) {
+      final gridIndex = getClosestGridPoint(gridDots, state.vertices[i]);
+      newVertices.add(gridDots[gridIndex]);
+    }
+
+    state = state.copyWith(vertices: newVertices);
+
+    // если attachMode поменяли с привязки на свободное расположение точек,
+    // то нет смысла добавлять новое состояние в snapshots
+    if (attachMode && state.vertices.isNotEmpty) {
+      ref.read(polygonSnapshotsNotifierProvider.notifier).addSnapshot(state);
+    }
+  }
+
   void setDraggedPointPosition(Offset newPosition) {
     int index = state.draggedPointIndex;
 
