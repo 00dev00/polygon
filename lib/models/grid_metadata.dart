@@ -12,6 +12,6 @@ class GridMetadata with _$GridMetadata {
     @Default(2) dotRadius,
     @Default(40) cellSize,
     @Default([]) List<Offset> generatedDots,
-    @Default(false) bool attachMode,
+    @Default(false) bool attachMode, // TODO: перенести в другой провайдер
   }) = _GridMetadata;
 }
