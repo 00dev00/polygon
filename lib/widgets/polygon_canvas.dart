@@ -11,20 +11,14 @@ import 'package:polygon/widgets/buttons/undo_redo_button.dart';
 
 class PolygonCanvas extends ConsumerWidget {
   const PolygonCanvas({super.key});
-  final double gridCellSide = 40;
-  final double gridDotRadius = 2;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final defaultGridMetadata = GridMetadata(
-      maxWidth: MediaQuery.sizeOf(context).width,
-      maxHeight: MediaQuery.sizeOf(context).height,
-      cellSize: gridCellSide,
-      dotRadius: gridDotRadius,
-    );
     final polygon = ref.watch(polygonNotifierProvider);
-    final gridProvider = gridMetadataNotifierProvider(defaultGridMetadata);
-    final gridMetadata = ref.watch(gridProvider);
+    final gridMetadata = ref.watch(gridMetadataNotifierProvider(
+      width: MediaQuery.sizeOf(context).width,
+      height: MediaQuery.sizeOf(context).height,
+    ));
 
     final appPaints = AppPaints(
       vertexInnerPaint: ref.read(vertexInnerPaintProvider),
@@ -80,8 +74,10 @@ class PolygonCanvas extends ConsumerWidget {
                       undo: _getUndoAction(ref),
                     ),
                     GridButton(
-                      attachMode: gridMetadata.attachMode,
-                      onPressed: ref.read(gridProvider.notifier).toggleMode,
+                      attachMode: polygon.attachedToGrid,
+                      onPressed: () => ref
+                          .read(polygonNotifierProvider.notifier)
+                          .toggleAttachMode(gridMetadata.generatedDots),
                     ),
                   ],
                 ),
@@ -157,7 +153,7 @@ void _onTapUp(
   if (!polygon.isCompleted) {
     final (bool success, String message) = ref
         .read(polygonNotifierProvider.notifier)
-        .addPoint(newPoint, defaultGridMetadata);
+        .addPoint(newPoint, defaultGridMetadata.generatedDots);
 
     if (!success) {
       _showErrorMessage(message, context);

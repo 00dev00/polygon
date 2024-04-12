@@ -9,5 +9,6 @@ class Polygon with _$Polygon {
     @Default([]) List<Offset> vertices,
     @Default(false) bool isCompleted,
     @Default(-1) int draggedPointIndex,
+    @Default(false) bool attachedToGrid,
   }) = _Polygon;
 }

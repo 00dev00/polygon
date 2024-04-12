@@ -19,6 +19,7 @@ mixin _$Polygon {
   List<Offset> get vertices => throw _privateConstructorUsedError;
   bool get isCompleted => throw _privateConstructorUsedError;
   int get draggedPointIndex => throw _privateConstructorUsedError;
+  bool get attachedToGrid => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PolygonCopyWith<Polygon> get copyWith => throw _privateConstructorUsedError;
@@ -29,7 +30,11 @@ abstract class $PolygonCopyWith<$Res> {
   factory $PolygonCopyWith(Polygon value, $Res Function(Polygon) then) =
       _$PolygonCopyWithImpl<$Res, Polygon>;
   @useResult
-  $Res call({List<Offset> vertices, bool isCompleted, int draggedPointIndex});
+  $Res call(
+      {List<Offset> vertices,
+      bool isCompleted,
+      int draggedPointIndex,
+      bool attachedToGrid});
 }
 
 /// @nodoc
@@ -48,6 +53,7 @@ class _$PolygonCopyWithImpl<$Res, $Val extends Polygon>
     Object? vertices = null,
     Object? isCompleted = null,
     Object? draggedPointIndex = null,
+    Object? attachedToGrid = null,
   }) {
     return _then(_value.copyWith(
       vertices: null == vertices
@@ -62,6 +68,10 @@ class _$PolygonCopyWithImpl<$Res, $Val extends Polygon>
           ? _value.draggedPointIndex
           : draggedPointIndex // ignore: cast_nullable_to_non_nullable
               as int,
+      attachedToGrid: null == attachedToGrid
+          ? _value.attachedToGrid
+          : attachedToGrid // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -73,7 +83,11 @@ abstract class _$$PolygonImplCopyWith<$Res> implements $PolygonCopyWith<$Res> {
       __$$PolygonImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Offset> vertices, bool isCompleted, int draggedPointIndex});
+  $Res call(
+      {List<Offset> vertices,
+      bool isCompleted,
+      int draggedPointIndex,
+      bool attachedToGrid});
 }
 
 /// @nodoc
@@ -90,6 +104,7 @@ class __$$PolygonImplCopyWithImpl<$Res>
     Object? vertices = null,
     Object? isCompleted = null,
     Object? draggedPointIndex = null,
+    Object? attachedToGrid = null,
   }) {
     return _then(_$PolygonImpl(
       vertices: null == vertices
@@ -104,6 +119,10 @@ class __$$PolygonImplCopyWithImpl<$Res>
           ? _value.draggedPointIndex
           : draggedPointIndex // ignore: cast_nullable_to_non_nullable
               as int,
+      attachedToGrid: null == attachedToGrid
+          ? _value.attachedToGrid
+          : attachedToGrid // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -114,7 +133,8 @@ class _$PolygonImpl implements _Polygon {
   const _$PolygonImpl(
       {final List<Offset> vertices = const [],
       this.isCompleted = false,
-      this.draggedPointIndex = -1})
+      this.draggedPointIndex = -1,
+      this.attachedToGrid = false})
       : _vertices = vertices;
 
   final List<Offset> _vertices;
@@ -132,10 +152,13 @@ class _$PolygonImpl implements _Polygon {
   @override
   @JsonKey()
   final int draggedPointIndex;
+  @override
+  @JsonKey()
+  final bool attachedToGrid;
 
   @override
   String toString() {
-    return 'Polygon(vertices: $vertices, isCompleted: $isCompleted, draggedPointIndex: $draggedPointIndex)';
+    return 'Polygon(vertices: $vertices, isCompleted: $isCompleted, draggedPointIndex: $draggedPointIndex, attachedToGrid: $attachedToGrid)';
   }
 
   @override
@@ -147,7 +170,9 @@ class _$PolygonImpl implements _Polygon {
             (identical(other.isCompleted, isCompleted) ||
                 other.isCompleted == isCompleted) &&
             (identical(other.draggedPointIndex, draggedPointIndex) ||
-                other.draggedPointIndex == draggedPointIndex));
+                other.draggedPointIndex == draggedPointIndex) &&
+            (identical(other.attachedToGrid, attachedToGrid) ||
+                other.attachedToGrid == attachedToGrid));
   }
 
   @override
@@ -155,7 +180,8 @@ class _$PolygonImpl implements _Polygon {
       runtimeType,
       const DeepCollectionEquality().hash(_vertices),
       isCompleted,
-      draggedPointIndex);
+      draggedPointIndex,
+      attachedToGrid);
 
   @JsonKey(ignore: true)
   @override
@@ -168,7 +194,8 @@ abstract class _Polygon implements Polygon {
   const factory _Polygon(
       {final List<Offset> vertices,
       final bool isCompleted,
-      final int draggedPointIndex}) = _$PolygonImpl;
+      final int draggedPointIndex,
+      final bool attachedToGrid}) = _$PolygonImpl;
 
   @override
   List<Offset> get vertices;
@@ -176,6 +203,8 @@ abstract class _Polygon implements Polygon {
   bool get isCompleted;
   @override
   int get draggedPointIndex;
+  @override
+  bool get attachedToGrid;
   @override
   @JsonKey(ignore: true)
   _$$PolygonImplCopyWith<_$PolygonImpl> get copyWith =>

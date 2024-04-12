@@ -16,12 +16,11 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$GridMetadata {
-  dynamic get maxWidth => throw _privateConstructorUsedError;
-  dynamic get maxHeight => throw _privateConstructorUsedError;
+  dynamic get width => throw _privateConstructorUsedError;
+  dynamic get height => throw _privateConstructorUsedError;
   dynamic get dotRadius => throw _privateConstructorUsedError;
   dynamic get cellSize => throw _privateConstructorUsedError;
   List<Offset> get generatedDots => throw _privateConstructorUsedError;
-  bool get attachMode => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GridMetadataCopyWith<GridMetadata> get copyWith =>
@@ -35,12 +34,11 @@ abstract class $GridMetadataCopyWith<$Res> {
       _$GridMetadataCopyWithImpl<$Res, GridMetadata>;
   @useResult
   $Res call(
-      {dynamic maxWidth,
-      dynamic maxHeight,
+      {dynamic width,
+      dynamic height,
       dynamic dotRadius,
       dynamic cellSize,
-      List<Offset> generatedDots,
-      bool attachMode});
+      List<Offset> generatedDots});
 }
 
 /// @nodoc
@@ -56,21 +54,20 @@ class _$GridMetadataCopyWithImpl<$Res, $Val extends GridMetadata>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? maxWidth = freezed,
-    Object? maxHeight = freezed,
+    Object? width = freezed,
+    Object? height = freezed,
     Object? dotRadius = freezed,
     Object? cellSize = freezed,
     Object? generatedDots = null,
-    Object? attachMode = null,
   }) {
     return _then(_value.copyWith(
-      maxWidth: freezed == maxWidth
-          ? _value.maxWidth
-          : maxWidth // ignore: cast_nullable_to_non_nullable
+      width: freezed == width
+          ? _value.width
+          : width // ignore: cast_nullable_to_non_nullable
               as dynamic,
-      maxHeight: freezed == maxHeight
-          ? _value.maxHeight
-          : maxHeight // ignore: cast_nullable_to_non_nullable
+      height: freezed == height
+          ? _value.height
+          : height // ignore: cast_nullable_to_non_nullable
               as dynamic,
       dotRadius: freezed == dotRadius
           ? _value.dotRadius
@@ -84,10 +81,6 @@ class _$GridMetadataCopyWithImpl<$Res, $Val extends GridMetadata>
           ? _value.generatedDots
           : generatedDots // ignore: cast_nullable_to_non_nullable
               as List<Offset>,
-      attachMode: null == attachMode
-          ? _value.attachMode
-          : attachMode // ignore: cast_nullable_to_non_nullable
-              as bool,
     ) as $Val);
   }
 }
@@ -101,12 +94,11 @@ abstract class _$$GridMetadataImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {dynamic maxWidth,
-      dynamic maxHeight,
+      {dynamic width,
+      dynamic height,
       dynamic dotRadius,
       dynamic cellSize,
-      List<Offset> generatedDots,
-      bool attachMode});
+      List<Offset> generatedDots});
 }
 
 /// @nodoc
@@ -120,26 +112,21 @@ class __$$GridMetadataImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? maxWidth = freezed,
-    Object? maxHeight = freezed,
+    Object? width = freezed,
+    Object? height = freezed,
     Object? dotRadius = freezed,
     Object? cellSize = freezed,
     Object? generatedDots = null,
-    Object? attachMode = null,
   }) {
     return _then(_$GridMetadataImpl(
-      maxWidth: freezed == maxWidth ? _value.maxWidth! : maxWidth,
-      maxHeight: freezed == maxHeight ? _value.maxHeight! : maxHeight,
+      width: freezed == width ? _value.width! : width,
+      height: freezed == height ? _value.height! : height,
       dotRadius: freezed == dotRadius ? _value.dotRadius! : dotRadius,
       cellSize: freezed == cellSize ? _value.cellSize! : cellSize,
       generatedDots: null == generatedDots
           ? _value._generatedDots
           : generatedDots // ignore: cast_nullable_to_non_nullable
               as List<Offset>,
-      attachMode: null == attachMode
-          ? _value.attachMode
-          : attachMode // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
@@ -148,20 +135,19 @@ class __$$GridMetadataImplCopyWithImpl<$Res>
 
 class _$GridMetadataImpl implements _GridMetadata {
   const _$GridMetadataImpl(
-      {this.maxWidth = 5000,
-      this.maxHeight = 5000,
+      {this.width = 5000,
+      this.height = 5000,
       this.dotRadius = 2,
       this.cellSize = 40,
-      final List<Offset> generatedDots = const [],
-      this.attachMode = false})
+      final List<Offset> generatedDots = const []})
       : _generatedDots = generatedDots;
 
   @override
   @JsonKey()
-  final dynamic maxWidth;
+  final dynamic width;
   @override
   @JsonKey()
-  final dynamic maxHeight;
+  final dynamic height;
   @override
   @JsonKey()
   final dynamic dotRadius;
@@ -178,12 +164,8 @@ class _$GridMetadataImpl implements _GridMetadata {
   }
 
   @override
-  @JsonKey()
-  final bool attachMode;
-
-  @override
   String toString() {
-    return 'GridMetadata(maxWidth: $maxWidth, maxHeight: $maxHeight, dotRadius: $dotRadius, cellSize: $cellSize, generatedDots: $generatedDots, attachMode: $attachMode)';
+    return 'GridMetadata(width: $width, height: $height, dotRadius: $dotRadius, cellSize: $cellSize, generatedDots: $generatedDots)';
   }
 
   @override
@@ -191,25 +173,22 @@ class _$GridMetadataImpl implements _GridMetadata {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$GridMetadataImpl &&
-            const DeepCollectionEquality().equals(other.maxWidth, maxWidth) &&
-            const DeepCollectionEquality().equals(other.maxHeight, maxHeight) &&
+            const DeepCollectionEquality().equals(other.width, width) &&
+            const DeepCollectionEquality().equals(other.height, height) &&
             const DeepCollectionEquality().equals(other.dotRadius, dotRadius) &&
             const DeepCollectionEquality().equals(other.cellSize, cellSize) &&
             const DeepCollectionEquality()
-                .equals(other._generatedDots, _generatedDots) &&
-            (identical(other.attachMode, attachMode) ||
-                other.attachMode == attachMode));
+                .equals(other._generatedDots, _generatedDots));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      const DeepCollectionEquality().hash(maxWidth),
-      const DeepCollectionEquality().hash(maxHeight),
+      const DeepCollectionEquality().hash(width),
+      const DeepCollectionEquality().hash(height),
       const DeepCollectionEquality().hash(dotRadius),
       const DeepCollectionEquality().hash(cellSize),
-      const DeepCollectionEquality().hash(_generatedDots),
-      attachMode);
+      const DeepCollectionEquality().hash(_generatedDots));
 
   @JsonKey(ignore: true)
   @override
@@ -220,25 +199,22 @@ class _$GridMetadataImpl implements _GridMetadata {
 
 abstract class _GridMetadata implements GridMetadata {
   const factory _GridMetadata(
-      {final dynamic maxWidth,
-      final dynamic maxHeight,
+      {final dynamic width,
+      final dynamic height,
       final dynamic dotRadius,
       final dynamic cellSize,
-      final List<Offset> generatedDots,
-      final bool attachMode}) = _$GridMetadataImpl;
+      final List<Offset> generatedDots}) = _$GridMetadataImpl;
 
   @override
-  dynamic get maxWidth;
+  dynamic get width;
   @override
-  dynamic get maxHeight;
+  dynamic get height;
   @override
   dynamic get dotRadius;
   @override
   dynamic get cellSize;
   @override
   List<Offset> get generatedDots;
-  @override
-  bool get attachMode;
   @override
   @JsonKey(ignore: true)
   _$$GridMetadataImplCopyWith<_$GridMetadataImpl> get copyWith =>

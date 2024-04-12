@@ -6,7 +6,7 @@ part of 'polygon_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$polygonNotifierHash() => r'a518a18381aa0c8258451e73a1f057e89ef1834e';
+String _$polygonNotifierHash() => r'12835c9ddba723ac5f250e49f511e1ae0c3e586d';
 
 /// See also [PolygonNotifier].
 @ProviderFor(PolygonNotifier)

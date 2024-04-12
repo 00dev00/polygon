@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:polygon/constants/all.dart';
 import 'package:polygon/models/grid_metadata.dart';
-import 'package:polygon/providers/polygon_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'drawing_providers.g.dart';
@@ -46,36 +45,35 @@ class AppPaints {
 
 @riverpod
 class GridMetadataNotifier extends _$GridMetadataNotifier {
+  static const double dotRadius = 2.0;
+  static const double cellSize = 40.0;
+
   @override
-  GridMetadata build(GridMetadata gridMetadata) {
+  GridMetadata build({
+    required double height,
+    required double width,
+  }) {
     final grid = _generateGrid(
-      maxHeight: gridMetadata.maxHeight,
-      maxWidth: gridMetadata.maxWidth,
-      dotRadius: gridMetadata.dotRadius,
-      cellSize: gridMetadata.cellSize,
+      height: height,
+      width: width,
     );
 
-    return gridMetadata.copyWith(
+    return GridMetadata(
+      height: height,
+      width: width,
+      cellSize: cellSize,
+      dotRadius: dotRadius,
       generatedDots: grid,
     );
   }
 
-  void toggleMode() {
-    state = state.copyWith(attachMode: !state.attachMode);
-    ref
-        .read(polygonNotifierProvider.notifier)
-        .attachToGrid(state.generatedDots, state.attachMode);
-  }
-
   List<Offset> _generateGrid({
-    required double maxHeight,
-    required double maxWidth,
-    required double dotRadius,
-    required double cellSize,
+    required double height,
+    required double width,
   }) {
     List<Offset> result = [];
-    for (double x = dotRadius; x < maxWidth; x += cellSize) {
-      for (double y = dotRadius; y < maxHeight; y += cellSize) {
+    for (double x = dotRadius; x < width; x += cellSize) {
+      for (double y = dotRadius; y < height; y += cellSize) {
         result.add(Offset(x, y));
       }
     }

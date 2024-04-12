@@ -65,7 +65,7 @@ final gridDotPaintProvider = AutoDisposeProvider<Paint>.internal(
 
 typedef GridDotPaintRef = AutoDisposeProviderRef<Paint>;
 String _$gridMetadataNotifierHash() =>
-    r'e487b00ec4240033ece5993f1c1482a72c7c21a9';
+    r'a696f706e439fae257d68dbaf5aea0ede5cb4c54';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -90,11 +90,13 @@ class _SystemHash {
 
 abstract class _$GridMetadataNotifier
     extends BuildlessAutoDisposeNotifier<GridMetadata> {
-  late final GridMetadata gridMetadata;
+  late final double height;
+  late final double width;
 
-  GridMetadata build(
-    GridMetadata gridMetadata,
-  );
+  GridMetadata build({
+    required double height,
+    required double width,
+  });
 }
 
 /// See also [GridMetadataNotifier].
@@ -107,11 +109,13 @@ class GridMetadataNotifierFamily extends Family<GridMetadata> {
   const GridMetadataNotifierFamily();
 
   /// See also [GridMetadataNotifier].
-  GridMetadataNotifierProvider call(
-    GridMetadata gridMetadata,
-  ) {
+  GridMetadataNotifierProvider call({
+    required double height,
+    required double width,
+  }) {
     return GridMetadataNotifierProvider(
-      gridMetadata,
+      height: height,
+      width: width,
     );
   }
 
@@ -120,7 +124,8 @@ class GridMetadataNotifierFamily extends Family<GridMetadata> {
     covariant GridMetadataNotifierProvider provider,
   ) {
     return call(
-      provider.gridMetadata,
+      height: provider.height,
+      width: provider.width,
     );
   }
 
@@ -143,10 +148,13 @@ class GridMetadataNotifierFamily extends Family<GridMetadata> {
 class GridMetadataNotifierProvider extends AutoDisposeNotifierProviderImpl<
     GridMetadataNotifier, GridMetadata> {
   /// See also [GridMetadataNotifier].
-  GridMetadataNotifierProvider(
-    GridMetadata gridMetadata,
-  ) : this._internal(
-          () => GridMetadataNotifier()..gridMetadata = gridMetadata,
+  GridMetadataNotifierProvider({
+    required double height,
+    required double width,
+  }) : this._internal(
+          () => GridMetadataNotifier()
+            ..height = height
+            ..width = width,
           from: gridMetadataNotifierProvider,
           name: r'gridMetadataNotifierProvider',
           debugGetCreateSourceHash:
@@ -156,7 +164,8 @@ class GridMetadataNotifierProvider extends AutoDisposeNotifierProviderImpl<
           dependencies: GridMetadataNotifierFamily._dependencies,
           allTransitiveDependencies:
               GridMetadataNotifierFamily._allTransitiveDependencies,
-          gridMetadata: gridMetadata,
+          height: height,
+          width: width,
         );
 
   GridMetadataNotifierProvider._internal(
@@ -166,17 +175,20 @@ class GridMetadataNotifierProvider extends AutoDisposeNotifierProviderImpl<
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.gridMetadata,
+    required this.height,
+    required this.width,
   }) : super.internal();
 
-  final GridMetadata gridMetadata;
+  final double height;
+  final double width;
 
   @override
   GridMetadata runNotifierBuild(
     covariant GridMetadataNotifier notifier,
   ) {
     return notifier.build(
-      gridMetadata,
+      height: height,
+      width: width,
     );
   }
 
@@ -185,13 +197,16 @@ class GridMetadataNotifierProvider extends AutoDisposeNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: GridMetadataNotifierProvider._internal(
-        () => create()..gridMetadata = gridMetadata,
+        () => create()
+          ..height = height
+          ..width = width,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        gridMetadata: gridMetadata,
+        height: height,
+        width: width,
       ),
     );
   }
@@ -205,21 +220,26 @@ class GridMetadataNotifierProvider extends AutoDisposeNotifierProviderImpl<
   @override
   bool operator ==(Object other) {
     return other is GridMetadataNotifierProvider &&
-        other.gridMetadata == gridMetadata;
+        other.height == height &&
+        other.width == width;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, gridMetadata.hashCode);
+    hash = _SystemHash.combine(hash, height.hashCode);
+    hash = _SystemHash.combine(hash, width.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin GridMetadataNotifierRef on AutoDisposeNotifierProviderRef<GridMetadata> {
-  /// The parameter `gridMetadata` of this provider.
-  GridMetadata get gridMetadata;
+  /// The parameter `height` of this provider.
+  double get height;
+
+  /// The parameter `width` of this provider.
+  double get width;
 }
 
 class _GridMetadataNotifierProviderElement
@@ -228,8 +248,9 @@ class _GridMetadataNotifierProviderElement
   _GridMetadataNotifierProviderElement(super.provider);
 
   @override
-  GridMetadata get gridMetadata =>
-      (origin as GridMetadataNotifierProvider).gridMetadata;
+  double get height => (origin as GridMetadataNotifierProvider).height;
+  @override
+  double get width => (origin as GridMetadataNotifierProvider).width;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
